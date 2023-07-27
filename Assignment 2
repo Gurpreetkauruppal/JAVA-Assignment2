@@ -1,0 +1,88 @@
+import java.util.*;
+
+enum Direction {
+    NORTH, SOUTH, EAST, WEST
+}
+
+enum CarColor {
+    RED, GREEN, BLUE, ORANGE, PINK
+}
+
+class Car {
+    private CarColor color;
+    private Direction direction;
+
+    public Car(CarColor color, Direction direction) {
+        this.color = color;
+        this.direction = direction;
+    }
+
+    public CarColor getColor() {
+        return color;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+}
+
+class TrafficSimulation {
+    private List<Car> cars;
+
+    public TrafficSimulation() {
+        cars = new ArrayList<>();
+    }
+
+    public void addCar(Car car) {
+        cars.add(car);
+    }
+
+    public Map<Direction, Map<CarColor, Integer>> generateReport() {
+        Map<Direction, Map<CarColor, Integer>> report = new HashMap<>();
+
+        for (Direction direction : Direction.values()) {
+            report.put(direction, new HashMap<>());
+            for (CarColor color : CarColor.values()) {
+                report.get(direction).put(color, 0);
+            }
+        }
+
+        for (Car car : cars) {
+            Direction direction = car.getDirection();
+            CarColor color = car.getColor();
+            int count = report.get(direction).get(color);
+            report.get(direction).put(color, count + 1);
+        }
+
+        return report;
+    }
+}
+
+public class CityTrafficEngineering {
+    public static void main(String[] args) {
+        TrafficSimulation simulation = new TrafficSimulation();
+
+        // Generate some cars and add them to the simulation
+        simulation.addCar(new Car(CarColor.RED, Direction.NORTH));
+        simulation.addCar(new Car(CarColor.GREEN, Direction.EAST));
+        simulation.addCar(new Car(CarColor.BLUE, Direction.WEST));
+        simulation.addCar(new Car(CarColor.RED, Direction.SOUTH));
+        simulation.addCar(new Car(CarColor.BLUE, Direction.NORTH));
+        simulation.addCar(new Car(CarColor.ORANGE, Direction.EAST));
+        simulation.addCar(new Car(CarColor.PINK, Direction.WEST));
+        simulation.addCar(new Car(CarColor.PINK, Direction.NORTH));
+
+        // Generate the report and print it
+        Map<Direction, Map<CarColor, Integer>> report = simulation.generateReport();
+
+        System.out.println("Traffic Report:");
+        for (Direction direction : report.keySet()) {
+            System.out.println("Direction: " + direction);
+            for (CarColor color : report.get(direction).keySet()) {
+                int count = report.get(direction).get(color);
+                System.out.println("    " + color + ": " + count + " cars");
+            }
+            System.out.println();
+        }
+    }
+}
